@@ -3,14 +3,14 @@ import logging
 from bs4 import BeautifulSoup
 from requests import RequestException
 
-from constants import EXPECTED_STATUS
+from constants import BS4_FEATURE, ENCODING, EXPECTED_STATUS, HTMLTag
 from exceptions import ParserFindTagException
 
 
 def get_response(session, url):
     try:
         response = session.get(url)
-        response.encoding = 'utf-8'
+        response.encoding = ENCODING
         return response
     except RequestException:
         logging.exception(f'Возникла ошибка при загрузке страницы {url}',
@@ -28,9 +28,9 @@ def find_tag(soup, tag, attrs=None):
 
 def get_status(session, preview_status, url):
     response = get_response(session, url)
-    soup = BeautifulSoup(response.text, features='lxml')
+    soup = BeautifulSoup(response.text, features=BS4_FEATURE)
     word_status_tag = soup.find(string='Status').parent
-    status_tag = word_status_tag.find_next_sibling('dd')
+    status_tag = word_status_tag.find_next_sibling(HTMLTag.DD)
     actual_status = status_tag.abbr.text
     expected_statuses = EXPECTED_STATUS[preview_status]
     if actual_status not in expected_statuses:
