@@ -9,7 +9,8 @@ from tqdm import tqdm
 
 from configs import configure_argument_parser, configure_logging
 from constants import (BASE_DIR, BS4_FEATURE, DL_LINK_PATTERN, HTMLTag,
-                       MAIN_DOC_URL, MAIN_PEPS_URL, PY_VERSION_STATUS_PATTERN)
+                       MAIN_DOC_URL, MAIN_PEPS_URL, OutputType,
+                       PY_VERSION_STATUS_PATTERN)
 from outputs import control_output
 from utils import find_tag, get_response, get_status
 
@@ -142,7 +143,7 @@ def main():
     results = MODE_TO_FUNCTION[parser_mode](session)
 
     if parser_mode == 'pep':
-        args.output = 'file'
+        args.output = OutputType.FILE
 
     if results:
         control_output(results, args)
